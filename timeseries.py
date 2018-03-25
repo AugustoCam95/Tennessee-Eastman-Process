@@ -15,21 +15,31 @@ labely = ['A FEED (unit = kscmh)','D FEED (unit = kg/hr)','E FEED (unit = kg/hr)
 'E Feed Flow','A Feed Flow','Total Feed Flow','Compressor Recycle Valve','Purge Valve','Separator Pot Liquid Flow','Stripper Liquid Product Flow','Stripper Steam Valve',
 'Reactor Cooling Water Flow','Condenser Cooling Water Flow','Agitator Speed']                                                     
 
-#Montar diretórios
+#Make directors
 for t in range(22):
-	newpath = r'/home/jose/Área de Trabalho/data/data{}'.format(t)
-	newpathte = r'/home/jose/Área de Trabalho/data/data{}_te'.format(t)
+	newpath = r'/home/jose/Documentos/data/data{}'.format(t)
+	newpathte = r'/home/jose/Documentos/data/data{}_te'.format(t)
 	if not os.path.exists(newpath):
 		os.makedirs(newpath)
 	if not os.path.exists(newpathte):
 		os.makedirs(newpathte)
 
-#laço principal
+for t in range(22):
+	newpath = r'/home/jose/Documentos/data/correlation{}'.format(t)
+	newpathte = r'/home/jose/Documentos/data/correlation{}_te'.format(t)
+	if not os.path.exists(newpath):
+		os.makedirs(newpath)
+	if not os.path.exists(newpathte):
+		os.makedirs(newpathte)
+
+
+
+#principal loop
 for i in range(22):
 	
 	print("LAÇO: {}".format(i))
 
-	#acessar arquivos
+	#access files
 	if(i<10):
 		archive =  np.loadtxt('d0{}.dat'.format(i))
 		archivete = np.loadtxt('d0{}_te.dat'.format(i))		
@@ -202,7 +212,7 @@ for i in range(22):
 
 
 
-		#make graphics and edit
+	#make graphics and edit
 	for j in range(52):
 		fig, ax = plt.subplots(figsize = (15,5))
 		if(j < 41):
@@ -232,7 +242,7 @@ for i in range(22):
 		if(( 35 < j ) and ( j < 41 ) ):
 			plt.ylabel(labely[j])
 			plt.xlabel('Process measurements (15 minute sampling interval)')
-		if(( 40 < j ) and ( j < 53 ) ):
+		if(( 40 < j ) and ( j < 53) ):
 			plt.ylabel(labely[j])
 			plt.xlabel('Process measurements (3 minute sampling interval)')
 	
@@ -245,12 +255,27 @@ for i in range(22):
 		plt.close(fig)
 
 
+	#correlation
+	for j in range(52):
+		fig, ax = plt.subplots(figsize = (15,5))
+		if(j < 51):
+			plt.scatter(archive[:,j],archive[:,j+1])
+			if(j < 41):
+				plt.savefig('correlation{}/XMEAS-({},{})-FAULT:{}.pdf'.format(i,j,j+1,i))
+			else:
+				plt.savefig('correlation{}/XMV-({},{})-FAULT:{}.pdf'.format(i,j,j+1,i))
+		plt.close(fig)
 
 
-
-
-
-
+	for j in range(52):
+		fig, ax = plt.subplots(figsize = (15,5))
+		if(j < 51):
+			plt.scatter(archivete[:,j],archivete[:,j+1])
+			if(j < 41):
+				plt.savefig('correlation{}_te/XMEAS-({},{})-FAULT:{}.pdf'.format(i,j,j+1,i))
+			else:
+				plt.savefig('correlation{}_te/XMV-({},{})-FAULT:{}.pdf'.format(i,j,j+1,i))
+		plt.close(fig)
 
 
 
